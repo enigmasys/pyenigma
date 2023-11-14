@@ -103,6 +103,105 @@ One can set the description which is relevant and unique to this upload.
 
 ### Tutorial 2: Programmatic metadata tagging of the data
 
+In this tutorial, we will walk through how to programmatically tag the data using the python binding.
+
+Step 1: We will be leveraging Pydantic Python classes to represent the content type objects in Python.
+To build the Pydantic Python Class, we will first need to have the JSONSchema for the content type.
+The JSONSchema for the content type is available through the UDCP CLI. We can also invoke the `metadataModelCodeGen` method
+to generate the Pydantic Python Class for the content type.
+
+```python
+
+import pyudcp
+LEAP_CLI_JAR_PATH = "/path/to/udcp_cli.jar"
+cli = pyudcp.UDCPPythonBinding()
+cli.setExecutableRootDir(LEAP_CLI_JAR_PATH)
+cli.metadataModelCodeGen("e0de6a4a-5257-4f2c-b3ce-470e3299fc4a",
+                         "./DPCodegen",
+                         "DigitalPhenotypingSchema.json",
+                         "DigitalPhenotypingContentModel.py",
+                         "DigitalPhenotypingContentModel")
+```
+This will generate the DigitalPhenotypingContentModel.py file in the `./DPCodegen` directory.
+The DigitalPhenotypingContentModel.py file will contain the Pydantic Python Class for the content type.
+DigitalPhenotypingContentModel.py file can be imported and used in the python code to represent the content type.
+`e0de6a4a-5257-4f2c-b3ce-470e3299fc4a` is the repository ID for the Digital Phenotyping content type.
+`DigitalPhenotypingSchema.json` is the JSONSchema for the Digital Phenotyping content type.
+`DigitalPhenotypingContentModel` is the name of the Pydantic Python Class that will be generated inside the DigitalPhenotypingContentModel.py file.
+
+
+Step 2: Populate the metadata with the values for the content type.
+We can use the Pydantic Python Class to populate the metadata for the content type.
+The Pydantic Python Class will have the same fields as the JSONSchema for the content type.
+We can populate the metadata for the content type using the Pydantic Python Class.
+
+```python
+from DPCodegen.DigitalPhenotypingContentModel import DigitalPhenotypingContentModel
+
+def captureMetadataInfo():
+
+    # Here we are importing from the generated pydantic model
+    import codegen.DigitalPhenotypingContentModel as model
+
+
+    mymodel = model.DigitalPhenotypingContentModel()
+    mymodel.participant = model.Participant()
+    mymodel.participant.participant_info = model.ParticipantInfo()
+    mymodel.participant.participant_info.participant_id = "12334"
+    mymodel.participant.participant_info.participant_status = model.Dropout(dropout={})
+    generatedJSON = mymodel.model_dump_json(indent=2, by_alias=True, exclude_unset=False, exclude_none=True)
+    return generatedJSON
+
+```
+Here we populate the metadata for the content type using the Pydantic Python Class.
+We can then use the generatedJSON object to tag the data.
+
+Before we tag the data, we will need to create a metadata tag file.
+The metadata tag file is a JSON file that contains the metadata for the content type.
+
+
+```python
+
+def savePopulatedMetadata(file_path: "./test/metadataUpload.json"):
+    import json
+    metadataUpload = json.dumps(createMetadataJSON(), indent=2)
+    # Save the generated file
+    with open(file_path, "w") as outfile:
+        outfile.write(metadataUpload)
+        outfile.close()
+
+
+def createMetadataJSON():
+    import json
+    tmpjson = {
+        'taxonomyVersion': json.loads(open("./codegen/taxonomyVersion.json").read()),
+        'taxonomyTags': [json.loads(captureMetadataInfo())]
+    }
+    return tmpjson
+```
+
+Here we are creating the metadata tag file using the `createMetadataJSON` method and saving it to the `./test/metadataUpload.json` file.
+The `taxonomyVersion.json` file contains the taxonomy version for the content type that is generated when we invoke the `metadataModelCodeGen` method.
+
+
+Step 3: Upload the data to the UDCP platform using the metadata tag file.
+
+```python
+import pyudcp
+LEAP_CLI_JAR_PATH = "/path/to/udcp_cli.jar"
+cli = pyudcp.UDCPPythonBinding()
+cli.setExecutableRootDir(LEAP_CLI_JAR_PATH)
+
+
+cli.uploadData("./upload/uploads",
+                "e0de6a4a-5257-4f2c-b3ce-470e3299fc4a",
+                "./test/metadataUpload.json",
+                "Test Description goes here, Uploaded on " + str(datetime.datetime.now()))
+```
+
+
+
+
 
 
 
