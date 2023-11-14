@@ -1,5 +1,5 @@
 # Make an abstract class for the CLI interface
-# Path: src/enigmapy/InterfaceCLI.py
+# Path: src/pyudcp/InterfaceCLI.py
 # Compare this snippet from EnigmaPythonBinding/pyenigma.py:
 #
 from abc import ABCMeta, abstractmethod

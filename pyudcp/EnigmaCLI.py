@@ -1,5 +1,5 @@
 
-from src.enigmapy.InterfaceCLI import InterfaceCLI
+from pyudcp.InterfaceCLI import InterfaceCLI
 import os
 
 

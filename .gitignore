@@ -1,2 +1,4 @@
 /venv/
 /tests/test_enigmapy.py
+/dist/
+/pyudcp.egg-info/

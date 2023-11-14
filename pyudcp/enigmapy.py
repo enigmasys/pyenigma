@@ -5,9 +5,8 @@
 
 import os
 
-from src.enigmapy import taxonomycodegen
-from src.enigmapy.EnigmaCLI import EnigmaCLI
-from src.enigmapy.InterfaceCLI import InterfaceCLI
+from pyudcp import taxonomycodegen
+from pyudcp.EnigmaCLI import EnigmaCLI
 
 
 # Create a python binding class
