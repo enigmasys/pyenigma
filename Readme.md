@@ -216,16 +216,16 @@ The `taxonomyVersion.json` file contains the taxonomy version for the content ty
 Step 3: Upload the data to the UDCP platform using the metadata tag file.
 
 ```python
-import pyudcp
-LEAP_CLI_JAR_PATH = "/path/to/udcp_cli.jar"
-cli = pyudcp.UDCPPythonBinding()
-cli.setExecutableRootDir(LEAP_CLI_JAR_PATH)
-
-
-cli.uploadData("./upload/uploads",
-                "e0de6a4a-5257-4f2c-b3ce-470e3299fc4a",
-                "./test/metadataUpload.json",
-                "Test Description goes here, Uploaded on " + str(datetime.datetime.now()))
+def uploaddata():
+    import datetime
+    # Upload the test data to the sandbox repository
+    # Upload data to the Sandbox Content type(Test Repo2)
+    cli = pyudcp.UDCPPythonBinding()
+    cli.setExecutableRootDir(LEAP_CLI_JAR_PATH)
+    cli.uploadData("./upload/uploads",
+                   "ae0f62d0-854b-4696-8c7d-54e89e04308e",
+                   POPULATED_METADATA_FILE_PATH,
+                   "Tutorial-2, Uploaded on " + str(datetime.datetime.now()))
 ```
 
 
