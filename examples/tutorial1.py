@@ -51,7 +51,7 @@ def run_download():
     cli.setExecutableRootDir(LEAP_CLI_JAR_PATH)
 
     DOWNLOAD_URI = "pdp://leappremonitiondev.azurewebsites.net/vutest/6e9da372-8cc7-4b11-bf85-23ed9d83a301/60/0"
-    cli.downloadData("./output1", DOWNLOAD_URI)
+    cli.downloadData("./output", DOWNLOAD_URI)
 
 
 def run_upload():
@@ -60,17 +60,17 @@ def run_upload():
     # Upload data to the Sandbox Content type(Test Repo2)
     cli.uploadData("./upload/uploads",
                    "ae0f62d0-854b-4696-8c7d-54e89e04308e",
-                   "./test/metadataUpload.json",
-                   "Test Description goes here, Uploaded on " + str(datetime.datetime.now()))
+                   "./upload/metadataUpload.json",
+                   "Tutorial-1, Uploaded on " + str(datetime.datetime.now()))
 
 
 if __name__ == '__main__':
     print('UDCP CLI Tutorial 1')
     # Run the Help Command of the UDCP CLI
     run_help()
-    # Run the Repo Listing Command
+    # # Run the Repo Listing Command
     run_repolisting()
-    # Download test data
+    # # Download test data
     run_download()
-    # Upload the test data
+    # # Upload the test data
     run_upload()
