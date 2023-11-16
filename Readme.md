@@ -107,21 +107,51 @@ In this tutorial, we will walk through how to programmatically tag the data usin
 
 Step 1: We will be leveraging Pydantic Python classes to represent the content type objects in Python.
 To build the Pydantic Python Class, we will first need to have the JSONSchema for the content type.
-The JSONSchema for the content type is available through the UDCP CLI. We can also invoke the `metadataModelCodeGen` method
+The JSONSchema for the content type is available through the UDCP CLI. We can invoke the `metadataModelCodeGen` method
 to generate the Pydantic Python Class for the content type.
 
-```python
+Let's first define the configuration for the metadataModelCodeGen method:
 
-import pyudcp
-LEAP_CLI_JAR_PATH = "/path/to/udcp_cli.jar"
-cli = pyudcp.UDCPPythonBinding()
-cli.setExecutableRootDir(LEAP_CLI_JAR_PATH)
-cli.metadataModelCodeGen("e0de6a4a-5257-4f2c-b3ce-470e3299fc4a",
-                         "./DPCodegen",
-                         "DigitalPhenotypingSchema.json",
-                         "DigitalPhenotypingContentModel.py",
-                         "DigitalPhenotypingContentModel")
+```python
+# This defines the path where the generated pydantic model will be saved
+CODE_GENERATED_OUTPUT_DIR = "./DPCodeGen"
+# This defines the name of the content type
+CONTENT_TYPE_NAME = "DigitalPhenotyping"
+
+# This defines the repository id from which the json schema will be downloaded
+REPOSITORY_ID = "e0de6a4a-5257-4f2c-b3ce-470e3299fc4a"
+
+# This defines the path where the LEAP CLI jar is located
+LEAP_CLI_JAR_PATH = "LEAP_CLI_DIR"
+
+# This defines the path where the populated metadata will be saved
+POPULATED_METADATA_FILE_PATH = "./input/metadataUpload.json"
 ```
+Next we define the method to generate the pydantic model for the content type:
+
+```python
+import pyudcp
+def generatePydanticModel():
+    cli = pyudcp.UDCPPythonBinding()
+    cli.setExecutableRootDir(LEAP_CLI_JAR_PATH)
+    # Here we are generating the pydantic model for the CONTENT_TYPE_NAME
+    # We first have to set the repository id (REPOSITORY_ID), output directory (CODE_GENERATED_OUTPUT_DIR), 
+    # json schema file name (CONTENT_TYPE_NAME + "Schema.json"), output Python file name(CONTENT_TYPE_NAME + "ContentModel.py") 
+    # and base class name(CONTENT_TYPE_NAME + "ContentModel")
+    # The base class name is the name of the class that will be generated in the pydantic model
+    # The output file name is the name of the file that will be generated in the directory
+    # The json schema file name is the name of the json schema file that will be downloaded from the repository
+    # The directory is the directory where the json schema file will be downloaded and the pydantic model will be generated
+    # The repository id is the id of the repository from which the json schema file will be downloaded
+
+    cli.metadataModelCodeGen(REPOSITORY_ID,
+                             CODE_GENERATED_OUTPUT_DIR,
+                             CONTENT_TYPE_NAME + "Schema.json",
+                             CONTENT_TYPE_NAME + "ContentModel.py",
+                             CONTENT_TYPE_NAME + "ContentModel")
+```
+
+
 This will generate the DigitalPhenotypingContentModel.py file in the `./DPCodegen` directory.
 The DigitalPhenotypingContentModel.py file will contain the Pydantic Python Class for the content type.
 DigitalPhenotypingContentModel.py file can be imported and used in the python code to represent the content type.
@@ -136,13 +166,11 @@ The Pydantic Python Class will have the same fields as the JSONSchema for the co
 We can populate the metadata for the content type using the Pydantic Python Class.
 
 ```python
-from DPCodegen.DigitalPhenotypingContentModel import DigitalPhenotypingContentModel
 
 def captureMetadataInfo():
 
     # Here we are importing from the generated pydantic model
-    import codegen.DigitalPhenotypingContentModel as model
-
+    import DPCodegen.DigitalPhenotypingContentModel as model
 
     mymodel = model.DigitalPhenotypingContentModel()
     mymodel.participant = model.Participant()
@@ -171,10 +199,11 @@ def savePopulatedMetadata(file_path: "./test/metadataUpload.json"):
         outfile.close()
 
 
+# This function appends the Taxonomy Version to the populated metadata
 def createMetadataJSON():
     import json
     tmpjson = {
-        'taxonomyVersion': json.loads(open("./codegen/taxonomyVersion.json").read()),
+        'taxonomyVersion': json.loads(open(CODE_GENERATED_OUTPUT_DIR + "/taxonomyVersion.json").read()),
         'taxonomyTags': [json.loads(captureMetadataInfo())]
     }
     return tmpjson

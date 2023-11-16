@@ -81,8 +81,17 @@ def generatePydanticModel():
                              CONTENT_TYPE_NAME + "ContentModel")
 
 
+
 def uploaddata():
-    pass
+    import datetime
+    # Upload the test data to the sandbox repository
+    # Upload data to the Sandbox Content type(Test Repo2)
+    cli = pyudcp.UDCPPythonBinding()
+    cli.setExecutableRootDir(LEAP_CLI_JAR_PATH)
+    cli.uploadData("./upload/uploads",
+                   "ae0f62d0-854b-4696-8c7d-54e89e04308e",
+                   POPULATED_METADATA_FILE_PATH,
+                   "Tutorial-2, Uploaded on " + str(datetime.datetime.now()))
 
 
 if __name__ == '__main__':
@@ -90,10 +99,10 @@ if __name__ == '__main__':
     # Download the jsonschema
 
     # Step 1: Generate the metadata pydantic model for the content type
-    # generatePydanticModel()
+    generatePydanticModel()
 
     # Step 2: Populate the metadata with the values for the content type
     savePopulatedMetadata(POPULATED_METADATA_FILE_PATH)
 
     # Step 3: Upload the metadata and the data to the repository
-    # uploaddata()
+    uploaddata()
