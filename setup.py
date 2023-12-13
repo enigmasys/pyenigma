@@ -12,7 +12,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="pyudcp",
-    version="0.3.0",
+    version="0.4.0",
     description="Python binding for Enigma CLI/ UDCP CLI",
     author="yogeshvu",
     author_email="yogesh.d.barve@vanderbilt.edu",

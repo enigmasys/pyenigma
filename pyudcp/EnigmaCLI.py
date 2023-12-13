@@ -15,6 +15,9 @@ class EnigmaCLI(InterfaceCLI):
         print("EnigmaCLI.run_enigma_cli()")
         # Run the enigma cli tool
         # cd to the directory where the enigma cli tool is located
+        # exit out of the current directory
+        # Store the current working directory in a variable
+        current_dir = os.getcwd()
         os.chdir(self.cli_exe_root_path)
         if command is not None:
             cmd_str = "java -jar leap_cli.jar " + str(command) + " --help"
@@ -22,6 +25,8 @@ class EnigmaCLI(InterfaceCLI):
             cmd_str = "java -jar leap_cli.jar --help"
         print(cmd_str)
         os.system(cmd_str)
+        # change dir back to original working directory (owd)
+        os.chdir(current_dir)
 
     def run_repo_listing(self):
         print("EnigmaCLI.run_repo_listing()")
