@@ -7,8 +7,14 @@ from datamodel_code_generator import (
     PythonVersion,
 )
 
+
+# Add Logging to the code
+import logging
+logger = logging.getLogger(__name__)
+
 def generatePydanticModel(inputFilePathName, outputFilePathName, baseClassName: str = None):
-    print("generatePydanticModel:", inputFilePathName, outputFilePathName, baseClassName)
+    # print("generatePydanticModel:", inputFilePathName, outputFilePathName, baseClassName)
+    logger.debug("generatePydanticModel: " + inputFilePathName + " " + outputFilePathName + " " + baseClassName)
     schema_path = Path(inputFilePathName)
     with open(schema_path) as f:
         schema = json.load(f)

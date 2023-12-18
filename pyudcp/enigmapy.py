@@ -8,6 +8,10 @@ import os
 from pyudcp import taxonomycodegen
 from pyudcp.EnigmaCLI import EnigmaCLI
 
+# Add logging to this module
+import logging
+# logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 # Create a python binding class
 
@@ -98,8 +102,9 @@ class UDCPPythonBinding:
 
         # get the absolute path for the directory
         directory = os.path.abspath(directory)
+        logger.debug("EnigmaCLI.downloadJSONSchema() current_dir: " + os.getcwd())
+        logger.debug("EnigmaCLI.downloadJSONSchema() directory: " + directory)
 
-        print("directory: " + directory)
         return self.CLI.downloadJSONSchema(repository_id, directory, filename)
 
     def metadataModelCodeGen(self, repository_id, directory=None, json_schema_filename=None, output_file_name=None,
